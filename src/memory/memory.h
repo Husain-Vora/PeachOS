@@ -1,4 +1,4 @@
-#ifndef MEMEORY_H
+#ifndef MEMORY_H
 #define MEMORY_H
 
 #include <stddef.h>
