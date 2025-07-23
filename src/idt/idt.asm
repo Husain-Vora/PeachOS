@@ -32,7 +32,7 @@ int21h:
     call int21h_handler
     popad
     sti
-    ret    
+    iret    
 
 no_interrupt:
     cli
@@ -40,4 +40,4 @@ no_interrupt:
     call no_interrupt_handler
     popad
     sti
-    ret
+    iret
