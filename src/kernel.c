@@ -2,10 +2,11 @@
 #include <stddef.h>
 #include <stdint.h>
 #include "idt/idt.h"
-#include "io/io.h"
 #include "memory/heap/kheap.h"
 #include "memory/paging/paging.h"
+#include "string/string.h"
 #include "disk/disk.h"
+#include "fs/pparser.h"
 
 uint16_t* video_mem = 0;
 uint16_t terminal_row = 0;
@@ -38,7 +39,6 @@ void terminal_writechar(char c, char colour)
         terminal_row += 1;
     }
 }
-
 void terminal_initialize()
 {
     video_mem = (uint16_t*)(0xB8000);
@@ -50,18 +50,10 @@ void terminal_initialize()
         {
             terminal_putchar(x, y, ' ', 0);
         }
-    }
+    }   
 }
 
-size_t strlen(const char* str)
-{
-    size_t len = 0;
-    while (str[len])
-    {
-        len++;
-    }
-    return len;
-}
+
 
 void print(const char* str)
 {
@@ -72,16 +64,17 @@ void print(const char* str)
     }
 }
 
+
 static struct paging_4gb_chunk* kernel_chunk = 0;
 void kernel_main()
 {
     terminal_initialize();
     print("Hello world!\ntest");
 
-    // Intialize the Heap
+    // Initialize the heap
     kheap_init();
 
-    // Search and Intialize Disks
+    // Search and initialize the disks
     disk_search_and_init();
 
     // Initialize the interrupt descriptor table
@@ -89,13 +82,23 @@ void kernel_main()
 
     // Setup paging
     kernel_chunk = paging_new_4gb(PAGING_IS_WRITABLE | PAGING_IS_PRESENT | PAGING_ACCESS_FROM_ALL);
-
+    
     // Switch to kernel paging chunk
     paging_switch(paging_4gb_chunk_get_directory(kernel_chunk));
 
     // Enable paging
     enable_paging();
-
+    
     // Enable the system interrupts
     enable_interrupts();
+
+    struct path_root* root_path = pathparser_parse("0:/bin/shell.exe", NULL);
+
+    if(root_path)
+    {
+
+
+    }
+
+
 }
