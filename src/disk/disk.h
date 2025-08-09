@@ -3,7 +3,7 @@
 
 typedef unsigned int PEACHOS_DISK_TYPE;
 
-//represents a real physical hard disk
+// represents a real physical hard disk
 #define PEACHOS_DISK_TYPE_REAL 0;
 
 struct disk
@@ -11,7 +11,6 @@ struct disk
     PEACHOS_DISK_TYPE type;
     int sector_size;
 };
-
 
 int disk_read_sector(int lba, int total, void* buf);
 void disk_search_and_init();
